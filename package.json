@@ -6,8 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "sharp --install"
+    "lint": "next lint"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
@@ -36,8 +35,5 @@
     "eslint-config-next": "15.4.1",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "optionalDependencies": {
-    "@img/sharp-libvips-dev": "^8.15.0"
   }
 }
