@@ -16,12 +16,6 @@ export function middleware(request: NextRequest) {
 
   // API rate limiting için basit kontrol
   if (request.nextUrl.pathname.startsWith("/api/")) {
-    const clientIP =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-
-    // Basit rate limiting (production'da Redis kullanılmalı)
     const currentTime = Date.now();
 
     // Bu basit bir örnek, gerçek uygulamada Redis veya başka bir cache kullanın
