@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll("files") as File[];
     const compressionLevel =
       parseInt(formData.get("compressionLevel") as string) || 80;
+    const fileType = (formData.get("fileType") as string) || "all";
 
     // Dosya validasyonu
     const validation = validateFileUpload(files);
@@ -115,42 +116,45 @@ export async function POST(request: NextRequest) {
         const originalName = file.name;
         const fileExtension = originalName.split(".").pop()?.toLowerCase();
 
-        let compressedBuffer: Buffer;
-        let compressedName: string;
+        let compressedBuffer: Buffer = buffer;
+        let compressedName: string = createSafeFilePath(originalName);
 
-        if (
-          ["jpg", "jpeg", "png", "webp", "gif"].includes(fileExtension || "")
-        ) {
-          // Resim sıkıştırma - daha agresif sıkıştırma
-          let quality = compressionLevel;
-
-          // Eğer dosya çok büyükse daha agresif sıkıştır
-          if (originalSize > 5 * 1024 * 1024) {
-            // 5MB'dan büyük
-            quality = Math.max(10, quality - 20);
+        // Sıkıştırma işlemi - seçili formata göre dönüştür
+        if (["jpeg", "png", "webp"].includes(fileType)) {
+          if (fileType === "jpeg") {
+            compressedBuffer = await sharp(buffer)
+              .jpeg({
+                quality: compressionLevel,
+                progressive: true,
+                mozjpeg: true,
+                chromaSubsampling: "4:2:0",
+              })
+              .toBuffer();
+            compressedName = createSafeFilePath(
+              originalName.replace(/\.[^/.]+$/, "") + ".jpg"
+            );
+          } else if (fileType === "png") {
+            compressedBuffer = await sharp(buffer)
+              .png({
+                quality: compressionLevel,
+                compressionLevel: 9,
+                progressive: true,
+              })
+              .toBuffer();
+            compressedName = createSafeFilePath(
+              originalName.replace(/\.[^/.]+$/, "") + ".png"
+            );
+          } else if (fileType === "webp") {
+            compressedBuffer = await sharp(buffer)
+              .webp({
+                quality: compressionLevel,
+                effort: 6,
+              })
+              .toBuffer();
+            compressedName = createSafeFilePath(
+              originalName.replace(/\.[^/.]+$/, "") + ".webp"
+            );
           }
-
-          compressedBuffer = await sharp(buffer)
-            .jpeg({
-              quality: quality,
-              progressive: true,
-              mozjpeg: true,
-            })
-            .toBuffer();
-
-          compressedName = createSafeFilePath(
-            originalName.replace(/\.[^/.]+$/, "") + ".jpg"
-          );
-        } else {
-          // Diğer dosya türleri için de sıkıştırma dene
-          if (fileExtension === "pdf") {
-            // PDF için basit kopyalama (gerçek PDF sıkıştırma için özel kütüphane gerekir)
-            compressedBuffer = buffer;
-          } else {
-            // Diğer dosyalar için basit kopyalama
-            compressedBuffer = buffer;
-          }
-          compressedName = createSafeFilePath(originalName);
         }
 
         const compressedSize = compressedBuffer.length;

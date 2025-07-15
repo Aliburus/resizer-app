@@ -34,12 +34,29 @@ export default function Home() {
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [compressionLevel, setCompressionLevel] = useState(80);
+  const [selectedFileType, setSelectedFileType] = useState<string>("all");
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressedFiles, setCompressedFiles] = useState<CompressedFile[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [locale, setLocale] = useState<Locale>(defaultLocale);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Dosya türüne göre özel sıkıştırma ayarları
+  const getCompressionSettings = (fileType: string) => {
+    switch (fileType) {
+      case "jpeg":
+        return { min: 10, max: 100, default: 85, step: 5 };
+      case "png":
+        return { min: 10, max: 100, default: 90, step: 5 };
+      case "webp":
+        return { min: 10, max: 100, default: 80, step: 5 };
+      case "documents":
+        return { min: 10, max: 100, default: 70, step: 10 };
+      default:
+        return { min: 10, max: 100, default: 80, step: 5 };
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -48,7 +65,64 @@ export default function Home() {
     if (savedLocale && locales.includes(savedLocale)) {
       setLocale(savedLocale);
     }
+
+    // Structured Data ekle
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "Resizer Pro",
+      description:
+        "Free online file compression tool. Compress images and documents with advanced algorithms.",
+      url: "https://resizer-pro.vercel.app",
+      applicationCategory: "UtilityApplication",
+      operatingSystem: "Web Browser",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+      featureList: [
+        "Image compression (JPEG, PNG, WebP, GIF)",
+        "Document compression (PDF, DOC, DOCX, TXT)",
+        "Batch processing",
+        "Quality control",
+        "Dark/Light mode",
+        "Multi-language support",
+      ],
+      author: {
+        "@type": "Organization",
+        name: "Resizer Pro Team",
+      },
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
   }, []);
+
+  // Seçilen dosya türüne göre sıkıştırma seviyesini güncelle
+  useEffect(() => {
+    const settings = getCompressionSettings(selectedFileType);
+    setCompressionLevel(settings.default);
+  }, [selectedFileType]);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const t = (key: string) => getTranslation(locale, key);
+
+  // Dosya türü seçenekleri (sadece çıktı formatı)
+  const fileTypeOptions = [
+    { value: "jpeg", label: t("jpegOptimization"), icon: "📸" },
+    { value: "png", label: t("pngOptimization"), icon: "🖼️" },
+    { value: "webp", label: t("webpConversion"), icon: "🌐" },
+  ];
 
   const changeLocale = (newLocale: Locale) => {
     setLocale(newLocale);
@@ -63,12 +137,6 @@ export default function Home() {
       setTheme("dark");
     }
   };
-
-  if (!mounted) {
-    return null;
-  }
-
-  const t = (key: string) => getTranslation(locale, key);
 
   const handleFileSelect = (selectedFiles: FileList | null) => {
     if (!selectedFiles) return;
@@ -115,6 +183,7 @@ export default function Home() {
         formData.append("files", file.file);
       });
       formData.append("compressionLevel", compressionLevel.toString());
+      formData.append("fileType", selectedFileType);
 
       const response = await fetch("/api/compress", {
         method: "POST",
@@ -392,6 +461,45 @@ export default function Home() {
                   {t("compressionSettings")}
                 </h3>
                 <div className="space-y-6">
+                  {/* Dosya Türü Seçici */}
+                  <div>
+                    <label className="text-lg font-medium text-secondary transition-colors duration-500 mb-3 block">
+                      {t("fileTypeSelection")}
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {fileTypeOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => setSelectedFileType(option.value)}
+                          type="button"
+                          className={`flex flex-col items-start p-5 rounded-2xl border-2 shadow-md transition-all duration-300 text-left space-y-2 w-full h-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
+                            ${
+                              selectedFileType === option.value
+                                ? "border-primary bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 scale-105 ring-2 ring-primary"
+                                : "border-custom bg-white dark:bg-gray-900 hover:border-primary hover:bg-blue-50 dark:hover:bg-gray-800"
+                            }
+                          `}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <span className="text-3xl">{option.icon}</span>
+                            <span className="font-bold text-lg text-primary">
+                              {option.label}
+                            </span>
+                          </div>
+                          <span className="text-sm text-secondary opacity-80">
+                            {option.value === "jpeg" &&
+                              "Tüm görseller JPEG formatına dönüştürülür ve optimize edilir."}
+                            {option.value === "png" &&
+                              "Tüm görseller PNG formatına dönüştürülür ve optimize edilir."}
+                            {option.value === "webp" &&
+                              "Tüm görseller WebP formatına dönüştürülür ve optimize edilir."}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Sıkıştırma Seviyesi */}
                   <div>
                     <div className="flex justify-between items-center mb-3">
                       <label className="text-lg font-medium text-secondary transition-colors duration-500">
@@ -404,8 +512,9 @@ export default function Home() {
                     <div className="relative">
                       <input
                         type="range"
-                        min="10"
-                        max="100"
+                        min={getCompressionSettings(selectedFileType).min}
+                        max={getCompressionSettings(selectedFileType).max}
+                        step={getCompressionSettings(selectedFileType).step}
                         value={compressionLevel}
                         onChange={(e) =>
                           setCompressionLevel(Number(e.target.value))
