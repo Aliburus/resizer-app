@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import sharp from "sharp";
+import Jimp from "jimp";
 import {
   validateFileUpload,
   checkRateLimit,
@@ -94,8 +94,6 @@ export async function POST(request: NextRequest) {
       base64Data: string;
     }> = [];
 
-    // Uploads klasörüne gerek yok, dosyaları kaydetmiyoruz
-
     for (const file of files) {
       try {
         const bytes = await file.arrayBuffer();
@@ -117,39 +115,37 @@ export async function POST(request: NextRequest) {
 
         // Sıkıştırma işlemi - seçili formata göre dönüştür
         if (["jpeg", "png", "webp"].includes(fileType)) {
-          if (fileType === "jpeg") {
-            compressedBuffer = await sharp(buffer)
-              .jpeg({
-                quality: compressionLevel,
-                progressive: true,
-                mozjpeg: true,
-                chromaSubsampling: "4:2:0",
-              })
-              .toBuffer();
-            compressedName = createSafeFilePath(
-              originalName.replace(/\.[^/.]+$/, "") + ".jpg"
-            );
-          } else if (fileType === "png") {
-            compressedBuffer = await sharp(buffer)
-              .png({
-                quality: compressionLevel,
-                compressionLevel: 9,
-                progressive: true,
-              })
-              .toBuffer();
-            compressedName = createSafeFilePath(
-              originalName.replace(/\.[^/.]+$/, "") + ".png"
-            );
-          } else if (fileType === "webp") {
-            compressedBuffer = await sharp(buffer)
-              .webp({
-                quality: compressionLevel,
-                effort: 6,
-              })
-              .toBuffer();
-            compressedName = createSafeFilePath(
-              originalName.replace(/\.[^/.]+$/, "") + ".webp"
-            );
+          try {
+            const image = await Jimp.read(buffer);
+
+            if (fileType === "jpeg") {
+              compressedBuffer = await image
+                .quality(compressionLevel)
+                .getBufferAsync(Jimp.MIME_JPEG);
+              compressedName = createSafeFilePath(
+                originalName.replace(/\.[^/.]+$/, "") + ".jpg"
+              );
+            } else if (fileType === "png") {
+              compressedBuffer = await image
+                .quality(compressionLevel)
+                .getBufferAsync(Jimp.MIME_PNG);
+              compressedName = createSafeFilePath(
+                originalName.replace(/\.[^/.]+$/, "") + ".png"
+              );
+            } else if (fileType === "webp") {
+              // Jimp WebP desteği sınırlı, PNG olarak kaydet
+              compressedBuffer = await image
+                .quality(compressionLevel)
+                .getBufferAsync(Jimp.MIME_PNG);
+              compressedName = createSafeFilePath(
+                originalName.replace(/\.[^/.]+$/, "") + ".png"
+              );
+            }
+          } catch (imageError) {
+            console.error("Image processing error:", imageError);
+            // Hata durumunda orijinal dosyayı kullan
+            compressedBuffer = buffer;
+            compressedName = createSafeFilePath(originalName);
           }
         }
 
