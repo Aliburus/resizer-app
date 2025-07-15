@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 import {
   validateFileUpload,
   checkRateLimit,
   getClientIP,
   createSafeFilePath,
-  getContentType,
   isIPBlacklisted,
   checkSuspiciousIP,
   validateFileSignature,
@@ -114,7 +111,6 @@ export async function POST(request: NextRequest) {
 
         const originalSize = buffer.length;
         const originalName = file.name;
-        const fileExtension = originalName.split(".").pop()?.toLowerCase();
 
         let compressedBuffer: Buffer = buffer;
         let compressedName: string = createSafeFilePath(originalName);

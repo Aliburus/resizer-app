@@ -10,6 +10,13 @@ interface AdSenseProps {
   fullWidthResponsive?: boolean;
 }
 
+// Window objesi için type extension
+declare global {
+  interface Window {
+    adsbygoogle: unknown[];
+  }
+}
+
 export default function AdSense({
   adSlot,
   adFormat = "auto",
@@ -20,9 +27,9 @@ export default function AdSense({
   useEffect(() => {
     try {
       // AdSense yüklendiyse reklamları göster
-      if (typeof window !== "undefined" && (window as any).adsbygoogle) {
-        (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-        (window as any).adsbygoogle.push({});
+      if (typeof window !== "undefined" && window.adsbygoogle) {
+        window.adsbygoogle = window.adsbygoogle || [];
+        window.adsbygoogle.push({});
       }
     } catch (error) {
       console.error("AdSense error:", error);

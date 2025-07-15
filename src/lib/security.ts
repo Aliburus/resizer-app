@@ -294,11 +294,12 @@ export function validateFileUpload(files: File[]): {
 }
 
 // Güvenli dosya yolu oluşturma
-export function createSafeFilePath(fileName: string): string {
+export function createSafeFilePath(originalName: string): string {
+  const sanitizedName = sanitizeFileName(originalName);
   const timestamp = Date.now();
-  const randomId = crypto.randomBytes(8).toString("hex");
-  const sanitizedName = sanitizeFileName(fileName);
-  return `${timestamp}_${randomId}_${sanitizedName}`;
+  const randomString = crypto.randomBytes(8).toString("hex");
+
+  return `${timestamp}_${randomString}_${sanitizedName}`;
 }
 
 // Content-Type kontrolü
@@ -337,6 +338,5 @@ export function getSecurityHeaders(): { [key: string]: string } {
 export function cleanupOldFiles(): void {
   // Bu fonksiyon cron job ile çağrılabilir
   // 24 saatten eski dosyaları sil
-  const uploadsDir = process.cwd() + "/public/uploads";
   // Dosya temizleme işlemi burada yapılacak
 }

@@ -22,7 +22,6 @@ export function middleware(request: NextRequest) {
       "unknown";
 
     // Basit rate limiting (production'da Redis kullanılmalı)
-    const rateLimitKey = `api_${clientIP}`;
     const currentTime = Date.now();
 
     // Bu basit bir örnek, gerçek uygulamada Redis veya başka bir cache kullanın
