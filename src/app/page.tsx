@@ -139,7 +139,7 @@ export default function Home() {
   const handleFileSelect = (selectedFiles: FileList | null) => {
     if (!selectedFiles) return;
 
-    const maxSize = 10 * 1024 * 1024;
+    const maxSize = 4 * 1024 * 1024;
     const newFiles: FileInfo[] = [];
     let tooLarge = false;
     Array.from(selectedFiles).forEach((file) => {
