@@ -69,7 +69,19 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll("files") as File[];
     const compressionLevel =
       parseInt(formData.get("compressionLevel") as string) || 80;
-    const fileType = (formData.get("fileType") as string) || "all";
+    const fileType = (formData.get("fileType") as string) || "jpeg";
+
+    // Sadece izin verilen formatlar
+    const allowedTypes = ["jpeg", "jpg", "png", "webp"];
+    if (!allowedTypes.includes(fileType)) {
+      return NextResponse.json(
+        {
+          error:
+            "Sadece jpeg, jpg, png veya webp formatına dönüştürebilirsiniz.",
+        },
+        { status: 400 }
+      );
+    }
 
     // Dosya validasyonu
     const validation = validateFileUpload(files);
@@ -114,11 +126,11 @@ export async function POST(request: NextRequest) {
         let compressedName: string = createSafeFilePath(originalName);
 
         // Sıkıştırma işlemi - seçili formata göre dönüştür
-        if (["jpeg", "png", "webp"].includes(fileType)) {
+        if (["jpeg", "jpg", "png", "webp"].includes(fileType)) {
           try {
             const image = await Jimp.read(buffer);
 
-            if (fileType === "jpeg") {
+            if (fileType === "jpeg" || fileType === "jpg") {
               compressedBuffer = await image
                 .quality(compressionLevel)
                 .getBufferAsync(Jimp.MIME_JPEG);
@@ -133,12 +145,11 @@ export async function POST(request: NextRequest) {
                 originalName.replace(/\.[^/.]+$/, "") + ".png"
               );
             } else if (fileType === "webp") {
-              // Jimp WebP desteği sınırlı, PNG olarak kaydet
               compressedBuffer = await image
                 .quality(compressionLevel)
-                .getBufferAsync(Jimp.MIME_PNG);
+                .getBufferAsync("image/webp");
               compressedName = createSafeFilePath(
-                originalName.replace(/\.[^/.]+$/, "") + ".png"
+                originalName.replace(/\.[^/.]+$/, "") + ".webp"
               );
             }
           } catch (imageError) {

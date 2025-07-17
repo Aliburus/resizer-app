@@ -34,7 +34,7 @@ export default function Home() {
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [compressionLevel, setCompressionLevel] = useState(80);
-  const [selectedFileType, setSelectedFileType] = useState<string>("all");
+  const [selectedFileType, setSelectedFileType] = useState<string>("");
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressedFiles, setCompressedFiles] = useState<CompressedFile[]>([]);
   const [showResults, setShowResults] = useState(false);
@@ -119,7 +119,8 @@ export default function Home() {
 
   // Dosya türü seçenekleri (sadece çıktı formatı)
   const fileTypeOptions = [
-    { value: "jpeg", label: t("jpegOptimization"), icon: "📸" },
+    { value: "jpeg", label: t("jpegOptimization"), icon: "��" },
+    { value: "jpg", label: "JPG", icon: "🖼️" },
     { value: "png", label: t("pngOptimization"), icon: "🖼️" },
     { value: "webp", label: t("webpConversion"), icon: "🌐" },
   ];
@@ -173,6 +174,10 @@ export default function Home() {
 
   const handleCompress = async () => {
     if (files.length === 0) return;
+    if (!selectedFileType) {
+      alert("Lütfen bir çıktı formatı seçin (jpeg, jpg, png veya webp)");
+      return;
+    }
 
     setIsCompressing(true);
     setShowResults(false);
@@ -450,7 +455,7 @@ export default function Home() {
                 multiple
                 className="hidden"
                 onChange={(e) => handleFileSelect(e.target.files)}
-                accept="image/*,.pdf,.doc,.docx,.txt"
+                accept="image/*"
               />
             </div>
 
@@ -489,6 +494,8 @@ export default function Home() {
                           <span className="text-sm text-secondary opacity-80">
                             {option.value === "jpeg" &&
                               "Tüm görseller JPEG formatına dönüştürülür ve optimize edilir."}
+                            {option.value === "jpg" &&
+                              "Tüm görseller JPG formatına dönüştürülür ve optimize edilir."}
                             {option.value === "png" &&
                               "Tüm görseller PNG formatına dönüştürülür ve optimize edilir."}
                             {option.value === "webp" &&
@@ -530,7 +537,7 @@ export default function Home() {
 
                   <button
                     onClick={handleCompress}
-                    disabled={isCompressing}
+                    disabled={isCompressing || !selectedFileType}
                     className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold text-lg rounded-xl transition-all duration-300 shadow-custom hover:shadow-custom-hover transform hover:-translate-y-1 disabled:transform-none active:translate-y-0"
                   >
                     {isCompressing ? (

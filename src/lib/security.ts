@@ -7,15 +7,10 @@ export const ALLOWED_FILE_TYPES = [
   "image/jpg",
   "image/png",
   "image/webp",
-  "image/gif",
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "text/plain",
 ];
 
-// Dosya boyutu limiti (30MB - daha sıkı)
-export const MAX_FILE_SIZE = 30 * 1024 * 1024;
+// Dosya boyutu limiti (20MB - daha sıkı)
+export const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
 // Maksimum dosya sayısı
 export const MAX_FILES = 5; // Daha sıkı
@@ -25,13 +20,6 @@ export const FILE_SIGNATURES: { [key: string]: string[] } = {
   "image/jpeg": ["FFD8FF"],
   "image/png": ["89504E47"],
   "image/webp": ["52494646"],
-  "image/gif": ["47494638"],
-  "application/pdf": ["25504446"],
-  "application/msword": ["D0CF11E0"],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-    "504B0304",
-  ],
-  "text/plain": [], // Text dosyaları için imza kontrolü yok
 };
 
 // IP kara listesi (örnek)
@@ -305,19 +293,12 @@ export function createSafeFilePath(originalName: string): string {
 // Content-Type kontrolü
 export function getContentType(fileName: string): string {
   const ext = fileName.split(".").pop()?.toLowerCase();
-
   const mimeTypes: { [key: string]: string } = {
     jpg: "image/jpeg",
     jpeg: "image/jpeg",
     png: "image/png",
     webp: "image/webp",
-    gif: "image/gif",
-    pdf: "application/pdf",
-    doc: "application/msword",
-    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    txt: "text/plain",
   };
-
   return mimeTypes[ext || ""] || "application/octet-stream";
 }
 
