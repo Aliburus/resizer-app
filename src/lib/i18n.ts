@@ -44,7 +44,7 @@ export const translations = {
     // File Upload
     dragDropTitle: "Dosyaları buraya sürükleyin",
     dragDropSubtitle: "veya dosya seçmek için tıklayın",
-    selectFile: "📂 Dosya Seç",
+    selectFile: "📂 Görsel Seç",
 
     // Compression Settings
     compressionSettings: "⚙️ Sıkıştırma Ayarları",
@@ -56,6 +56,9 @@ export const translations = {
 
     // File List
     selectedFiles: "📋 Seçilen Dosyalar",
+    imageIcon: "🖼️",
+    selectedImage: "Seçili Görsel",
+    selectedImages: "Seçili Görseller",
 
     // Results
     compressionResults: "🎉 Sıkıştırma Sonuçları",
@@ -116,6 +119,9 @@ export const translations = {
 
     // File List
     selectedFiles: "📋 Selected Files",
+    imageIcon: "🖼️",
+    selectedImage: "Selected Image",
+    selectedImages: "Selected Images",
 
     // Results
     compressionResults: "🎉 Compression Results",
@@ -176,6 +182,9 @@ export const translations = {
 
     // File List
     selectedFiles: "📋 Fichiers Sélectionnés",
+    imageIcon: "🖼️",
+    selectedImage: "Image sélectionnée",
+    selectedImages: "Images sélectionnées",
 
     // Results
     compressionResults: "🎉 Résultats de Compression",
@@ -235,6 +244,9 @@ export const translations = {
 
     // File List
     selectedFiles: "📋 已选文件",
+    imageIcon: "🖼️",
+    selectedImage: "已选图片",
+    selectedImages: "已选图片",
 
     // Results
     compressionResults: "🎉 压缩结果",
@@ -295,6 +307,9 @@ export const translations = {
 
     // File List
     selectedFiles: "📋 Ausgewählte Dateien",
+    imageIcon: "🖼️",
+    selectedImage: "Ausgewähltes Bild",
+    selectedImages: "Ausgewählte Bilder",
 
     // Results
     compressionResults: "🎉 Komprimierungsergebnisse",

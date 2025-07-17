@@ -116,7 +116,7 @@ export default function Home() {
 
   // Dosya türü seçenekleri (sadece çıktı formatı)
   const fileTypeOptions = [
-    { value: "jpeg", label: t("jpegOptimization"), icon: "��" },
+    { value: "jpeg", label: t("jpegOptimization"), icon: "📸" },
     { value: "jpg", label: "JPG", icon: "🖼️" },
     { value: "png", label: t("pngOptimization"), icon: "🖼️" },
     { value: "webp", label: t("webpConversion"), icon: "🌐" },
@@ -412,7 +412,9 @@ export default function Home() {
                 onDrop={handleDrop}
               >
                 <div className="space-y-6">
-                  <div className="text-8xl animate-bounce">📁</div>
+                  <div className="text-8xl animate-bounce">
+                    {t("imageIcon")}
+                  </div>
                   <div>
                     <h3 className="text-2xl font-semibold text-primary mb-2 transition-colors duration-500">
                       {t("dragDropTitle")}
@@ -432,10 +434,18 @@ export default function Home() {
                     {files.length > 0 ? (
                       <span className="flex items-center space-x-2">
                         <span>✓</span>
-                        <span>Selected ({files.length})</span>
+                        <span>
+                          {files.length === 1
+                            ? t("selectedImage")
+                            : t("selectedImages")}
+                          ({files.length})
+                        </span>
                       </span>
                     ) : (
-                      t("selectFile")
+                      <span>
+                        <span className="mr-2">{t("imageIcon")}</span>
+                        {t("selectFile")}
+                      </span>
                     )}
                   </button>
                 </div>
