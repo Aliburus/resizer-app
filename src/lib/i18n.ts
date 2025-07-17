@@ -82,6 +82,7 @@ export const translations = {
     invalidFilePath: "Geçersiz dosya yolu",
     fileProcessingError: "Dosya işlenirken hata oluştu",
     filesCompressedSuccessfully: "dosya başarıyla sıkıştırıldı",
+    fileTooLargeClient: "10MB'den büyük görseller yüklenemez",
 
     // File Types
     image: "🖼️",
@@ -145,6 +146,7 @@ export const translations = {
     invalidFilePath: "Invalid file path",
     fileProcessingError: "Error processing file",
     filesCompressedSuccessfully: "files compressed successfully",
+    fileTooLargeClient: "Images larger than 10MB cannot be uploaded",
 
     // File Types
     image: "🖼️",
@@ -208,6 +210,8 @@ export const translations = {
     invalidFilePath: "Chemin de fichier invalide",
     fileProcessingError: "Erreur lors du traitement du fichier",
     filesCompressedSuccessfully: "fichiers compressés avec succès",
+    fileTooLargeClient:
+      "Les images de plus de 10 Mo ne peuvent pas être téléchargées",
 
     // File Types
     image: "🖼️",
@@ -270,6 +274,7 @@ export const translations = {
     invalidFilePath: "无效的文件路径",
     fileProcessingError: "文件处理错误",
     filesCompressedSuccessfully: "文件压缩成功",
+    fileTooLargeClient: "无法上传大于10MB的图片",
 
     // File Types
     image: "🖼️",
@@ -333,6 +338,7 @@ export const translations = {
     invalidFilePath: "Ungültiger Dateipfad",
     fileProcessingError: "Fehler bei der Dateiverarbeitung",
     filesCompressedSuccessfully: "Dateien erfolgreich komprimiert",
+    fileTooLargeClient: "Bilder über 10MB können nicht hochgeladen werden",
 
     // File Types
     image: "🖼️",

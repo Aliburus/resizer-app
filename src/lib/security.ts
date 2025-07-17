@@ -9,8 +9,8 @@ export const ALLOWED_FILE_TYPES = [
   "image/webp",
 ];
 
-// Dosya boyutu limiti (20MB - daha sıkı)
-export const MAX_FILE_SIZE = 20 * 1024 * 1024;
+// Dosya boyutu limiti (10MB - daha sıkı)
+export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 // Maksimum dosya sayısı
 export const MAX_FILES = 5; // Daha sıkı

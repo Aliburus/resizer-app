@@ -139,13 +139,24 @@ export default function Home() {
   const handleFileSelect = (selectedFiles: FileList | null) => {
     if (!selectedFiles) return;
 
-    const newFiles: FileInfo[] = Array.from(selectedFiles).map((file) => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      file: file,
-    }));
-
+    const maxSize = 10 * 1024 * 1024;
+    const newFiles: FileInfo[] = [];
+    let tooLarge = false;
+    Array.from(selectedFiles).forEach((file) => {
+      if (file.size > maxSize) {
+        tooLarge = true;
+      } else {
+        newFiles.push({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          file: file,
+        });
+      }
+    });
+    if (tooLarge) {
+      alert(t("fileTooLargeClient"));
+    }
     setFiles((prev) => [...prev, ...newFiles]);
   };
 
