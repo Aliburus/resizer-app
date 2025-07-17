@@ -51,8 +51,6 @@ export default function Home() {
         return { min: 10, max: 100, default: 90, step: 5 };
       case "webp":
         return { min: 10, max: 100, default: 80, step: 5 };
-      case "documents":
-        return { min: 10, max: 100, default: 70, step: 10 };
       default:
         return { min: 10, max: 100, default: 80, step: 5 };
     }
@@ -72,7 +70,7 @@ export default function Home() {
       "@type": "WebApplication",
       name: "Resizer Pro",
       description:
-        "Free online file compression tool. Compress images and documents with advanced algorithms.",
+        "Free online image compression tool. Compress and convert images with advanced algorithms.",
       url: "https://resizer-pro.vercel.app",
       applicationCategory: "UtilityApplication",
       operatingSystem: "Web Browser",
@@ -82,8 +80,7 @@ export default function Home() {
         priceCurrency: "USD",
       },
       featureList: [
-        "Image compression (JPEG, PNG, WebP, GIF)",
-        "Document compression (PDF, DOC, DOCX, TXT)",
+        "Image compression (JPEG, PNG, WebP)",
         "Batch processing",
         "Quality control",
         "Dark/Light mode",
@@ -568,11 +565,7 @@ export default function Home() {
                       className="px-8 py-6 flex items-center justify-between hover:bg-muted transition-all duration-300"
                     >
                       <div className="flex items-center space-x-4">
-                        <div className="text-3xl">
-                          {file.type.startsWith("image/")
-                            ? t("image")
-                            : t("document")}
-                        </div>
+                        <div className="text-3xl">{t("image")}</div>
                         <div>
                           <p className="text-lg font-medium text-primary transition-colors duration-500">
                             {file.name}
